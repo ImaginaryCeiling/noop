@@ -1,7 +1,7 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { AppState, Channel, Note } from '@/types';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { AppState, Channel, Message } from '@/types';
 import { readState, writeState } from '@/lib/storage';
 
 interface AppStateContextType {
@@ -11,11 +11,9 @@ interface AppStateContextType {
   updateChannel: (id: string, fields: Partial<Channel>) => void;
   deleteChannel: (id: string) => void;
   selectChannel: (id: string) => void;
-  // Note operations
-  createNote: (channelId: string, title?: string) => string;
-  updateNote: (id: string, fields: Partial<Note>) => void;
-  deleteNote: (id: string) => void;
-  selectNote: (id: string) => void;
+  // Message operations
+  sendMessage: (channelId: string, content: string) => string;
+  deleteMessage: (id: string) => void;
 }
 
 const AppStateContext = createContext<AppStateContextType | null>(null);
@@ -64,78 +62,55 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const deleteChannel = (id: string): void => {
     setState(prev => {
       const newChannels = prev.channels.filter(c => c.id !== id);
-      const newNotes = prev.notes.filter(n => n.channelId !== id);
+      const newMessages = prev.messages.filter(m => m.channelId !== id);
       
       return {
         ...prev,
         channels: newChannels,
-        notes: newNotes,
+        messages: newMessages,
         activeChannelId: prev.activeChannelId === id 
           ? (newChannels[0]?.id || null) 
           : prev.activeChannelId,
-        activeNoteId: prev.notes.find(n => n.id === prev.activeNoteId)?.channelId === id
-          ? null
-          : prev.activeNoteId,
       };
     });
   };
 
-  const selectChannel = (id: string): void => {
+  const selectChannel = useCallback((id: string): void => {
     setState(prev => ({
       ...prev,
       activeChannelId: id,
-      activeNoteId: null, // Clear active note when switching channels
     }));
-  };
+  }, []);
 
-  // Note operations
-  const createNote = (channelId: string, title?: string): string => {
-    const id = `note-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  // Message operations
+  const sendMessage = useCallback((channelId: string, content: string): string => {
+    const id = `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const now = Date.now();
     
-    const newNote: Note = {
-      id,
-      channelId,
-      title: title || 'Untitled Note',
-      content: '',
-      createdAt: now,
-      updatedAt: now,
-    };
+    setState(prev => {
+      const newMessage: Message = {
+        id,
+        channelId,
+        content: content.trim(),
+        author: prev.currentUser,
+        createdAt: now,
+      };
 
-    setState(prev => ({
-      ...prev,
-      notes: [...prev.notes, newNote],
-      activeNoteId: id,
-    }));
+      return {
+        ...prev,
+        messages: [...prev.messages, newMessage],
+      };
+    });
 
     return id;
-  };
+  }, []);
 
-  const updateNote = (id: string, fields: Partial<Note>): void => {
+  const deleteMessage = useCallback((id: string): void => {
     setState(prev => ({
       ...prev,
-      notes: prev.notes.map(note =>
-        note.id === id
-          ? { ...note, ...fields, updatedAt: Date.now() }
-          : note
-      ),
+      messages: prev.messages.filter(m => m.id !== id),
     }));
-  };
-
-  const deleteNote = (id: string): void => {
-    setState(prev => ({
-      ...prev,
-      notes: prev.notes.filter(n => n.id !== id),
-      activeNoteId: prev.activeNoteId === id ? null : prev.activeNoteId,
-    }));
-  };
-
-  const selectNote = (id: string): void => {
-    setState(prev => ({
-      ...prev,
-      activeNoteId: id,
-    }));
-  };
+  }, []);
 
   const value: AppStateContextType = {
     state,
@@ -143,10 +118,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     updateChannel,
     deleteChannel,
     selectChannel,
-    createNote,
-    updateNote,
-    deleteNote,
-    selectNote,
+    sendMessage,
+    deleteMessage,
   };
 
   return (

@@ -1,20 +1,42 @@
 import { AppState } from '@/types';
 
-const STORAGE_KEY = 'channel-notes-app-state';
+const STORAGE_KEY = 'channel-chat-app-state';
 
 const getDefaultState = (): AppState => ({
   channels: [
     {
       id: 'general',
       name: 'general',
-      description: 'Default channel for getting started',
+      description: 'General discussion',
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    },
+    {
+      id: 'random',
+      name: 'random',
+      description: 'Random conversations',
       createdAt: Date.now(),
       updatedAt: Date.now(),
     }
   ],
-  notes: [],
+  messages: [
+    {
+      id: 'welcome-1',
+      channelId: 'general',
+      content: 'Welcome to Channel Chat! 👋',
+      author: 'System',
+      createdAt: Date.now() - 1000,
+    },
+    {
+      id: 'welcome-2',
+      channelId: 'general',
+      content: 'This is a Discord-style chat interface. Try typing a message below!',
+      author: 'System',
+      createdAt: Date.now(),
+    }
+  ],
   activeChannelId: 'general',
-  activeNoteId: null,
+  currentUser: 'You',
 });
 
 export const readState = (): AppState => {
@@ -24,6 +46,7 @@ export const readState = (): AppState => {
 
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
+    
     if (!stored) {
       return getDefaultState();
     }
@@ -31,8 +54,11 @@ export const readState = (): AppState => {
     const state = JSON.parse(stored) as AppState;
     
     // Migration for existing users
-    if (!state.notes) state.notes = [];
-    if (!state.activeNoteId) state.activeNoteId = null;
+    if (!state.messages) state.messages = [];
+    if (!state.currentUser) state.currentUser = 'You';
+    if (!state.channels || state.channels.length === 0) {
+      state.channels = getDefaultState().channels;
+    }
     
     return state;
   } catch (error) {

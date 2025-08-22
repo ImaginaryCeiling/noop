@@ -71,7 +71,7 @@ export default function ChannelSidebar() {
                 value={newChannelName}
                 onChange={(e) => setNewChannelName(e.target.value)}
                 placeholder="channel-name"
-                className="w-full bg-gray-700 text-white px-2 py-1 text-sm rounded border-none outline-none"
+                className="w-full bg-gray-700 text-black px-2 py-1 text-sm rounded border-none outline-none"
                 autoFocus
                 onBlur={() => {
                   if (!newChannelName.trim()) {
@@ -125,7 +125,7 @@ export default function ChannelSidebar() {
       {/* Footer */}
       <div className="p-3 border-t border-gray-700">
         <div className="text-xs text-gray-500">
-          {state.notes.length} notes across {state.channels.length} channels
+          {state.messages.length} messages across {state.channels.length} channels
         </div>
       </div>
     </div>

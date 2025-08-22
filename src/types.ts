@@ -6,18 +6,17 @@ export type Channel = {
   updatedAt: number;
 };
 
-export type Note = {
+export type Message = {
   id: string;
   channelId: string;
-  title: string;
   content: string;
+  author: string;
   createdAt: number;
-  updatedAt: number;
 };
 
 export type AppState = {
   channels: Channel[];
-  notes: Note[];
+  messages: Message[];
   activeChannelId: string | null;
-  activeNoteId: string | null;
+  currentUser: string;
 };

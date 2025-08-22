@@ -64,3 +64,46 @@ textarea:focus {
   outline: none;
   box-shadow: 0 0 0 2px #5865f2;
 }
+
+/* Ensure all inputs and textareas have black text */
+input,
+textarea {
+  color: black !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #6b7280 !important;
+}
+
+/* Discord-style message styling */
+.message-content {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+/* Custom button styles */
+.btn-discord {
+  background: #5865f2;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  font-weight: 500;
+  transition: background-color 0.17s ease;
+}
+
+.btn-discord:hover:not(:disabled) {
+  background: #4752c4;
+}
+
+.btn-discord:disabled {
+  background: #4f5660;
+  cursor: not-allowed;
+}
+
+/* Message input focus state */
+.message-input:focus {
+  border-color: #5865f2;
+  box-shadow: 0 0 0 1px #5865f2;
+}
