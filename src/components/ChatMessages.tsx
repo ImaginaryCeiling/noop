@@ -1,7 +1,7 @@
 'use client';
 
 import { useAppState } from '@/contexts/AppStateContext';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface ChatMessagesProps {
   channelId: string;
@@ -10,11 +10,17 @@ interface ChatMessagesProps {
 export default function ChatMessages({ channelId }: ChatMessagesProps) {
   const { state, deleteMessage } = useAppState();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [isClient, setIsClient] = useState(false);
   
   const channel = state.channels.find(c => c.id === channelId);
   const channelMessages = state.messages
     .filter(m => m.channelId === channelId)
     .sort((a, b) => a.createdAt - b.createdAt);
+
+  // Ensure we only render timestamps on the client to avoid hydration mismatch
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -101,7 +107,7 @@ export default function ChatMessages({ channelId }: ChatMessagesProps) {
                             {message.author}
                           </span>
                           <span className="text-xs text-gray-500">
-                            {formatTime(message.createdAt)}
+                            {isClient ? formatTime(message.createdAt) : '...'}
                           </span>
                         </div>
                         <p className="text-gray-800 mt-1 message-content">
@@ -122,7 +128,7 @@ export default function ChatMessages({ channelId }: ChatMessagesProps) {
                     <div className="flex items-start space-x-3">
                       <div className="w-10 flex-shrink-0 flex justify-center">
                         <span className="text-xs text-gray-400 opacity-0 group-hover:opacity-100">
-                          {formatTime(message.createdAt)}
+                          {isClient ? formatTime(message.createdAt) : '...'}
                         </span>
                       </div>
                       <div className="flex-1 min-w-0">
