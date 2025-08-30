@@ -60,7 +60,7 @@ export default function MessageInput({ channelId }: MessageInputProps) {
   ], []);
 
   return (
-    <div className="border-t bg-white px-6 py-4 flex-shrink-0">
+    <div className="border-t px-6 py-4 flex-shrink-0" style={{ backgroundColor: 'var(--main-bg)', borderColor: 'var(--sidebar-border)' }}>
       <form onSubmit={handleSubmit} className="flex items-end space-x-3">
         <div className="flex-1 relative">
           <textarea
@@ -69,11 +69,11 @@ export default function MessageInput({ channelId }: MessageInputProps) {
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             placeholder={`Message #${channelId}`}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg resize-none message-input text-black"
-            style={{ minHeight: '44px', maxHeight: '120px' }}
+            className="w-full px-4 py-3 border rounded-lg resize-none message-input"
+            style={{ backgroundColor: 'var(--input-bg)', color: 'var(--input-text)', borderColor: 'var(--input-border)', minHeight: '44px', maxHeight: '120px' }}
             rows={1}
           />
-          <div className="absolute bottom-2 right-2 text-xs text-gray-400">
+          <div className="absolute bottom-2 right-2 text-xs" style={{ color: 'var(--sidebar-text-muted)' }}>
             Press Enter to send, Shift+Enter for new line
           </div>
         </div>

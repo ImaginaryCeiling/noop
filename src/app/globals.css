@@ -3,19 +3,45 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  
+  /* Light mode colors */
+  --sidebar-bg: #f3f4f6;
+  --sidebar-border: #e5e7eb;
+  --sidebar-text: #374151;
+  --sidebar-text-muted: #6b7280;
+  --sidebar-hover: #e5e7eb;
+  --sidebar-active: #d1d5db;
+  
+  --main-bg: #ffffff;
+  --main-text: #111827;
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --input-text: #111827;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  
+  /* Dark mode colors */
+  --sidebar-bg: #2f3136;
+  --sidebar-border: #40444b;
+  --sidebar-text: #dcddde;
+  --sidebar-text-muted: #72767d;
+  --sidebar-hover: #36393f;
+  --sidebar-active: #40444b;
+  
+  --main-bg: #36393f;
+  --main-text: #dcddde;
+  --input-bg: #40444b;
+  --input-border: #4f545c;
+  --input-text: #dcddde;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
@@ -39,22 +65,22 @@ body {
   -webkit-line-clamp: 3;
 }
 
-/* Custom scrollbar styling for Discord-like feel */
+/* Custom scrollbar styling */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #2f3136;
+  background: var(--sidebar-bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #202225;
+  background: var(--sidebar-border);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #1a1d23;
+  background: var(--sidebar-text-muted);
 }
 
 /* Focus outline customization */
@@ -64,15 +90,17 @@ textarea:focus {
   box-shadow: 0 0 0 2px #5865f2;
 }
 
-/* Ensure all inputs and textareas have black text */
+/* Theme-aware input styling */
 input,
 textarea {
-  color: black !important;
+  background: var(--input-bg);
+  color: var(--input-text);
+  border-color: var(--input-border);
 }
 
 input::placeholder,
 textarea::placeholder {
-  color: #6b7280 !important;
+  color: var(--sidebar-text-muted);
 }
 
 /* Discord-style message styling */

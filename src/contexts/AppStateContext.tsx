@@ -14,6 +14,8 @@ interface AppStateContextType {
   // Message operations
   sendMessage: (channelId: string, content: string) => string;
   deleteMessage: (id: string) => void;
+  // Theme operations
+  toggleDarkMode: () => void;
 }
 
 const AppStateContext = createContext<AppStateContextType | null>(null);
@@ -112,6 +114,14 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     }));
   }, []);
 
+  // Theme operations
+  const toggleDarkMode = useCallback((): void => {
+    setState(prev => ({
+      ...prev,
+      darkMode: !prev.darkMode,
+    }));
+  }, []);
+
   const value: AppStateContextType = {
     state,
     createChannel,
@@ -120,6 +130,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     selectChannel,
     sendMessage,
     deleteMessage,
+    toggleDarkMode,
   };
 
   return (

@@ -19,4 +19,5 @@ export type AppState = {
   messages: Message[];
   activeChannelId: string | null;
   currentUser: string;
+  darkMode: boolean;
 };

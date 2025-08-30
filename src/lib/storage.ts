@@ -37,6 +37,7 @@ const getDefaultState = (): AppState => ({
   ],
   activeChannelId: 'general',
   currentUser: 'You',
+  darkMode: true,
 });
 
 export const readState = (): AppState => {
@@ -56,6 +57,7 @@ export const readState = (): AppState => {
     // Migration for existing users
     if (!state.messages) state.messages = [];
     if (!state.currentUser) state.currentUser = 'You';
+    if (state.darkMode === undefined) state.darkMode = true;
     if (!state.channels || state.channels.length === 0) {
       state.channels = getDefaultState().channels;
     }
