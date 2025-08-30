@@ -22,10 +22,14 @@ export default function ChannelSidebar() {
   const handleCreateChannel = (e: React.FormEvent) => {
     e.preventDefault();
     if (newChannelName.trim()) {
-      const channelId = createChannel(newChannelName.trim());
-      setNewChannelName('');
-      setShowNewChannelForm(false);
-      router.push(`/${channelId}`);
+      try {
+        const channelId = createChannel(newChannelName.trim());
+        setNewChannelName('');
+        setShowNewChannelForm(false);
+        router.push(`/${channelId}`);
+      } catch (error) {
+        alert(error instanceof Error ? error.message : 'Failed to create channel');
+      }
     }
   };
 

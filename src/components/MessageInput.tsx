@@ -9,7 +9,7 @@ interface MessageInputProps {
 }
 
 export default function MessageInput({ channelId }: MessageInputProps) {
-  const { sendMessage } = useAppState();
+  const { state, sendMessage } = useAppState();
   const [message, setMessage] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -59,6 +59,10 @@ export default function MessageInput({ channelId }: MessageInputProps) {
     },
   ], []);
 
+  // Find the channel name for the placeholder
+  const channel = state.channels.find(c => c.id === channelId);
+  const channelName = channel?.name || channelId;
+
   return (
     <div className="border-t px-6 py-4 flex-shrink-0" style={{ backgroundColor: 'var(--main-bg)', borderColor: 'var(--sidebar-border)' }}>
       <form onSubmit={handleSubmit} className="flex items-end space-x-3">
@@ -68,7 +72,7 @@ export default function MessageInput({ channelId }: MessageInputProps) {
             value={message}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            placeholder={`Message #${channelId}`}
+            placeholder={`Message #${channelName}`}
             className="w-full px-4 py-3 border rounded-lg resize-none message-input"
             style={{ backgroundColor: 'var(--input-bg)', color: 'var(--input-text)', borderColor: 'var(--input-border)', minHeight: '44px', maxHeight: '120px' }}
             rows={1}

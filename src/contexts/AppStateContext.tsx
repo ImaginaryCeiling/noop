@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { AppState, Channel, Message } from '@/types';
 import { readState, writeState } from '@/lib/storage';
+import { slugify, isValidChannelName } from '@/lib/utils';
 
 interface AppStateContextType {
   state: AppState;
@@ -30,12 +31,27 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
 
   // Channel operations
   const createChannel = (name: string, description?: string): string => {
-    const id = `channel-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const trimmedName = name.trim();
+    
+    if (!isValidChannelName(trimmedName)) {
+      throw new Error('Invalid channel name. Use only letters, numbers, spaces, hyphens, and underscores.');
+    }
+    
+    const baseId = slugify(trimmedName);
+    
+    // Check if channel ID already exists and add number suffix if needed
+    let id = baseId;
+    let counter = 1;
+    while (state.channels.some(c => c.id === id)) {
+      id = `${baseId}-${counter}`;
+      counter++;
+    }
+    
     const now = Date.now();
     
     const newChannel: Channel = {
       id,
-      name,
+      name: trimmedName,
       description,
       createdAt: now,
       updatedAt: now,
